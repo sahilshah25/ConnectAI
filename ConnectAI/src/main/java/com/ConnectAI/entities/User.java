@@ -1,7 +1,11 @@
 package com.ConnectAI.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,7 +27,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class User implements UserDetails {
     @Id
     private String userId;
     private String name;
@@ -36,7 +40,7 @@ public class User {
     @Column(length = 500)
     private String about;
     private String profilePic;
-    private boolean enabled=false;
+    private boolean enabled=true;
     private boolean emailVerified=false;
     private boolean phoneverified=false;
 
@@ -49,6 +53,30 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     private List<Contact> contacts=new ArrayList<>();
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isEnabled(){
+        return this.enabled;
+
+    }
+
+    @Override
+    public String getPassword(){
+        return this.password;
+    }
+
      
 
     // @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
